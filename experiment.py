@@ -28,7 +28,7 @@ from . sing.params import singing_2intervals
 ########################################################################################################################
 DESIGN = "within"  # within vs across
 SYLLABLE = 'TA'
-NUM_NOTES = 5
+NUM_NOTES = 3
 NUM_INT = (NUM_NOTES - 1)
 
 # trials
@@ -39,7 +39,7 @@ MAX_INT_SIZE = 999
 MAX_MELODY_PITCH_RANGE = 999  # deactivated
 MAX_INTERVAL2REFERENCE = 10  # set to 7.5 if NUM_INT > 2
 NUM_CHAINS_EXPERIMENT = 200  # decrease if NUM_INT > 2
-NUM_TRIALS_PARTICIPANT = 40  # decrease if NUM_INT > 2
+NUM_TRIALS_PARTICIPANT = 30  # decrease if NUM_INT > 2
 
 # singing
 config = singing_2intervals  # params singing extraction (from sing4me)
@@ -70,11 +70,11 @@ pitch_duration = note_duration_tonejs + note_silence_tonejs
 
 # experiment parameters
 initial_recruitment_size = 10
-num_iterations_per_chain = 5
+num_iterations_per_chain = 10
 max_num_failed_trials_allowed = 2
 target_num_participants = 30
 num_chains_per_participant = 3  # only active in within
-num_chains_per_experiment = 3  # only active in across
+num_chains_per_experiment = 100  # only active in across
 
 repeat_same_chain = True
 save_plot = True
@@ -368,11 +368,11 @@ class Exp(psynet.experiment.Experiment):
     label = "Iterated singing demo"
 
     asset_storage = DebugStorage()
-    # asset_storage = LocalStorage()
+    # asset_storage = LocalStorage() # uncomment this to save assets locally (main experiment)
 
     timeline = Timeline(
         NoConsent(),
-        CodeBlock(lambda participant: participant.var.set("register", "low")),  # set singing register to low for debugg
+        CodeBlock(lambda participant: participant.var.set("register", "high")),  # set singing register to high for debugg
         InfoPage(
             Markup(f"""Please imitate each melody as accurately as possible"""),
             time_estimate=5,
@@ -397,7 +397,3 @@ class Exp(psynet.experiment.Experiment):
         ),
         SuccessfulEndPage(),
     )
-
-    def __init__(self, session=None):
-        super().__init__(session)
-        self.initial_recruitment_size = initial_recruitment_size
