@@ -83,3 +83,34 @@ data_nets %>%
   mutate_if(is.list, ~paste(unlist(.), collapse = ',')) %>% 
   write.csv("data/clean-data/singing-musicians-June-2026/singing-musicians-June-2026_full.csv", row.names = FALSE)
 
+
+################################################################################
+# Second batch musicians (singing-musicians-July-2026)
+# 24 participants
+# 50 trials per person (within-participants: 5 chains, 10 iterations)
+# NOTE: experiment mostly worked but it needs to improve to avoid too many failed trials in one network
+################################################################################
+data_nodes <- read_csv("data/clean-data/singing-musicians-July-2026/singing-musicians-July-2026_node_data.csv")
+data_trials <- read_csv("data/clean-data/singing-musicians-July-2026/singing-musicians-July-2026_trial_data.csv")
+
+length(table(data_nodes$network_id))
+table(data_nodes$degree)
+length(table(data_trials$network_id))
+length(table(data_trials$degree))
+
+data_nets = prepare_trial_data(data_nodes[,-1], data_trials[,-1])
+
+length(unique(data_nets$participant_id)) # 76
+length(unique(data_nets$network_id)) # 348
+table(data_nets$degree) 
+table(data_nets$trial_maker_id)
+
+data_nets <- data_nets %>% 
+  mutate(trial_type = ifelse(degree != 0, "node_trial", "source_trial")) %>%
+  select(-definition, -seed, -stats, -reason)
+
+# save
+data_nets %>% 
+  rowwise() %>% 
+  mutate_if(is.list, ~paste(unlist(.), collapse = ',')) %>% 
+  write.csv("data/clean-data/singing-musicians-July-2026/singing-musicians-July-2026_full.csv", row.names = FALSE)
